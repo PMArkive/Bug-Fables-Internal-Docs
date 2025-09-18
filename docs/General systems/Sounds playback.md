@@ -32,6 +32,8 @@ public static AudioSource PlaySound(AudioClip soundclip, int id, float pitch)
 public static AudioSource PlaySound(AudioClip soundclip, int id, float pitch, float volume)
 public static AudioSource PlaySound(AudioClip soundclip, int id, float pitch, float volume, bool loop)
 ```
+All overloads ends up calling the last one in the list above.
+
 It will plays the `soundclip` AudioClip using the `sounds[id]` AudioSource with a pitch of `pitch`, volume of `soundvolume` * `volume` and a loop property of `loop` then returns the AudioSource where the AudioClip started playing as well as setting `lastsoundid` to `id`. In practice, `id` can only be from 0 to 14 as `sounds` has a fixed size of 15 enforced by LoadEssentials.
 
 If SoundVolume returns false (meaning sounds are muted), the method returns null instead. NOTE: It does NOT return an empty AudioSource, this means the return value needs to be null checked to avoid an exception being thrown.
