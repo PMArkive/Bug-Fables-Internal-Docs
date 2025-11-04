@@ -18,8 +18,8 @@ The decision of which move to use depends on odds, but the odds changes if hardm
 
 |Move|Odds when hardmode is false|Odds when hardmode is true|
 |---:|---------|------|
-|1|67%|33%|
-|2|50%|50%|
+|1|67%|50%|
+|2|33%|50%|
 
 ## Move 1 - Aerial spin
 A single target aerial spin attack

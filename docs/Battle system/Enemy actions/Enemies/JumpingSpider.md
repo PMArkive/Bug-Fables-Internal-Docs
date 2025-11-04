@@ -17,8 +17,8 @@ The decision of which move to use depends on these odds which changes depending 
 
 |Move|Odds when hardmode is false|Odds when hardmode is true|
 |---:|----|----|
-|1|75%|25%|
-|2|60%|40%|
+|1|75%|60%|
+|2|25%|40%|
 
 ## Move 1 - Small jump attack
 A single target small jump attack that may steal a standard [item](../../../Enums%20and%20IDs/Items.md).
