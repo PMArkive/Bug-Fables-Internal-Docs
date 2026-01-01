@@ -10,7 +10,7 @@
 `EnemyData` is also loaded on the Start and Update of the PauseMenu.
 
 ## `EnemyData` data
-The asset contains one line per [enemy](../Enums%20and%20IDs/Enemies.md) whose id corresponds to the line index. Each line contains fields separated by `@`:
+The asset contains one line per [enemy](../Enums%20and%20IDs/Enemies.md) whose id corresponds to the line index. Each line contains fields separated by `,`:
 
 |Loaded index|Name|Type|Description|
 |-----------:|----|----|-----------|

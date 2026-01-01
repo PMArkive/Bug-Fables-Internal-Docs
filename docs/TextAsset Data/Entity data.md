@@ -40,7 +40,7 @@ Here is the layout of the data and the fields associated with this struct (NOTE:
 |7|freezesize|Vector3||
 |8|freezeoffset|Vector3||
 |9|freezeflipoffset|Vector3||
-|10|preloaddata|string\[\]|The strings are split by `?`, can be left empty in which case, the array is left to `null`. The strings represents asset paths relative from the Asset directory. A `$` prefix means to not preload outside of battle while a `$` indicate it is a sprite instead of a game object from a prefab|
+|10|preloaddata|string\[\]|The strings are split by `?`, can be left empty in which case, the array is left to `null`. The strings represents asset paths relative from the Asset directory. A `$` prefix means to not preload outside of battle while a `&` indicate it is a sprite instead of a game object from a prefab|
 |11|shakeondrop|bool||
 |12|diganim|bool||
 |13|dontoverridejump|bool||
@@ -134,9 +134,9 @@ While a lot of these fields have shared meanings, a lot are dependant of the spe
 |60|Length of npcdata.data|int|Maximum of 10|
 |61-70|npcdata.data|int\[\]|General purpose int array|
 |71|Length of npcdata.vectordata|int|Maximum of 10|
-|72-101|npcdata.vectordata|Vector3\[\]|General purpose triplets of floats array|
+|72-101|npcdata.vectordata|Vector3\[\] (each component is a field)|General purpose triplets of floats array|
 |102|Length of npcdata.dialogues|int|Maximum of 20|
-|103-162|npcdata.dialogues|Vector3\[\]|For an [NPC](../Entities/NPCControl/NPC.md), consult the documentation of [GetDialogue](../Entities/NPCControl/Notable%20methods/GetDialogue.md) to learn how this array is managed|
+|103-162|npcdata.dialogues|Vector3\[\] (each component is a field)|For an [NPC](../Entities/NPCControl/NPC.md), consult the documentation of [GetDialogue](../Entities/NPCControl/Notable%20methods/GetDialogue.md) to learn how this array is managed|
 |163|transform.eulerAngles.x|float||
 |164|transform.eulerAngles.y|float||
 |165|transform.eulerAngles.z|float||
@@ -150,7 +150,7 @@ While a lot of these fields have shared meanings, a lot are dependant of the spe
 |176|emoticonoffset.y|float||
 |177|emoticonoffset.z|float||
 |178|npcdata.insideid|int|The interior id of the map the entity starts in|
-|179-188|npcdata.emoticonflag|string\[10\]|See [CheckEmoteFlag](../Entities/NPCControl/Notable%20methods/CheckEmoteFlag.md)|
+|179-188|npcdata.emoticonflag|Vector2\[10\] (components are `,` separated)|See [CheckEmoteFlag](../Entities/NPCControl/Notable%20methods/CheckEmoteFlag.md)|
 |189|npcdata.tattleid|int|The [dialogue line id](../SetText/Common%20commands%20id%20schemes/Dialogue%20line%20id.md) corresponding to tattling the NPCControl|
 |190|npcdata.regionalflag|int|The [Regionalflags](../Flags%20arrays/Regionalflags.md) slot bound to this entity|
 |191|initialheight|float||
