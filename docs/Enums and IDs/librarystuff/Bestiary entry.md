@@ -2,7 +2,7 @@
 
 A bestiary entry is a collectible bound to a bool that tells whether or not the specific entry for the enemy is unlocked in the library. Their values are saved in the [Save File](../../External%20data%20format/Save%20File.md) and the array of them is located at index 1 of the `MainManager.instance.librarystuff` 2 dimensional jagged array and it contains 256 elements (most are not used as the array is overprosioned in size).
 
- > They are not to be confused with [Enemies](../Enemies.md).
+ > They are not to be confused with [Enemies](../Enemies.md). While the bestiary portion of `librarystuff` is addressed by enemy ids, a bestiary entry contains information outside of the enemy and not all enemies have a backing entry.
 
 The entire `librarystuff` two dimensional array is saved on the [Save File](../../External%20data%20format/Save%20File.md).
 
