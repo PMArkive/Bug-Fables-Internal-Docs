@@ -259,6 +259,29 @@ Enemies not meant to have a [Bestiary entry](../Enums%20and%20IDs/librarystuff/B
 
 During `GetEnemyData`, the typical `entityname` value is the one loaded into `enemynames` but it will be menutext 59 (?????) during Cave Of Trials for an unseen enemy or if createentity is true and the enemy is `FireKrawler`, `FireCape` or `FireWarden` while [flag](../Flags%20arrays/flags.md) 664 is false (not yet approached the oven during Chapter 7).
 
+### Processing of biography and spy dialogues text
+The biography supports pagination in the pause menu. The string can contain `{` to delimit pages in that menu. The pause menu provides UI to only call SetText with the current page's text and a way to browse the different pages. 
+
+It is technically possible to conditionally decide to not render further pages by using `}flags}` as delimiter instead where flags is a [flags](../Flags%20arrays/flags.md) slot that must be true to process any further pages. However, this should not be done because it will have the adverse effect of not allowing to consult any of the spy dialogues if the condition isn't met.
+
+The 3 spy dialogues also supports pagination, but in a different way. The biography and spy dialogues text are designed to be processed in [SetText](../SetText/SetText.md), but what's special about the spy dialogues is that SetText call will be in [dialogue mode](../SetText/Dialogue%20mode.md) during battle and non dialogue mode in the pause menu. Because of this, it's not possible to use curly braces to specify the pages in the spy dialogues. Due to this, the pause menu will preprocess a special unreferenced SetText command: `|librarybreak|`.
+
+Since it's not referenced, it doesn't actually do anything during SetText by itself so during a battle, nothing will happen. The pause menu however will preprocess the text by replacing all occurences of this command with some special delimiters text that splits the page properly. It needs to be EXACTLY `|librarybreak|` with case sensitivity for this replacement to work.
+
+It should be noted that every spy dialogues's rendering in the pause menu are processed in a very specific way:
+
+- All `|next|` strings are replaced with `\n` and then split on those (they will be joined back in a different way below)
+- Each page's text is preceded with all of these appended together:
+    - `|`[icon](../SetText/Individual%20commands/Icon.md)`,X,0.5,100| ` where `X` is the icon sprite of the bug the dialogue concerns
+    - If in the Japanese [language](../SetText/languageid.md), `|`[font](../SetText/Individual%20commands/Font.md)`,3||size,0.8,1|`
+    - Some `menutext` to title the page (`X's notes` in English where `X` is the name of the bug it concerns)
+    - `|tab,7||line||halfline|`
+    - If in the Japanese [language](../SetText/languageid.md), there's a second `|halfline|` at the end of the prefix
+- Each lines (as split above) is only rendered if all its length is at least 6 characters disregarding any `|librarybreak|` strings. Under normal gameplay, this only affects the `LeafbugClubber` enemy whose `Moth` spy dialogue features `|next|...|next|` which fits the condition to not be rendered
+- Each lines is prefixed and suffixed with quotation marks which are `"` in all languages except Japanese where the prefix is `「` and the suffix is `」`
+- Each line within each page are joined together such that `|line||halfline|` appears between them for spacing
+- The `Beetle`'s spy dialogue is always suffixed with `}16}` which has the effect of not allowing to consult the Leif's spy dialogue in the pause menu until [flags](../Flags%20arrays/flags.md) 16 is true (Leif is able to fight)
+
 ## `TattleList` data
 The asset contains the order to render the [Bestiary entry](../Enums%20and%20IDs/librarystuff/Bestiary%20entry.md) in the [Library List Type](../ItemList/List%20Types%20Group%20Details/Library%20List%20Type.md) where each line contains one field:
 
