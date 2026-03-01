@@ -249,9 +249,9 @@ The asset contains one line per [Enemy](../Enums%20and%20IDs/Enemies.md) whose i
 |------------:|----|----|-----------|
 |0|Name|[SetText](../SetText/SetText.md) string|The name of the enemy|
 |1|Biography|[SetText](../SetText/SetText.md) string|The biography of the enemy|
-|2|Vi's spy|[SetText](../SetText/SetText.md) string|Vi's Spy dialogue|
-|3|Kabbu's spy|[SetText](../SetText/SetText.md) string|Kabbu's Spy dialogue|
-|4|Leif's spy|[SetText](../SetText/SetText.md) string|Leif's Spy dialogue|
+|2|`Bee`'s spy|[SetText](../SetText/SetText.md) string|`Bee`'s Spy dialogue|
+|3|`Beetle`'s spy|[SetText](../SetText/SetText.md) string|`Beetle`'s Spy dialogue|
+|4|`Moth`'s spy|[SetText](../SetText/SetText.md) string|`Moth`'s Spy dialogue|
 
 The data will be loaded into `librarydata[1, id, x]` where `id` is the [Enemy](../Enums%20and%20IDs/Enemies.md) id and `x` is the loaded index. The name is also loaded into `enemynames`.
 
