@@ -267,3 +267,5 @@ The asset contains the order to render the [Bestiary entry](../Enums%20and%20IDs
 |Enemy id|int|The [Enemies](../Enums%20and%20IDs/Enemies.md) id of the enemy to render at the position of the line index|
 
 The data will be loaded into `libraryorder[1, i]` where i is the line index.
+
+Not all enemy ids are required to appear here, but the presence of one is what determines if the associated enemy is in the bestiary. If an id does not appear here, it simply means that the enemy exists, but do not have a `librarystuff` slot dedicated to them. This is typically done for enemy variants (which cannot be spied since they are recognised as their base counterpart) or enemies which have their `notattle` set to true where they cannot be spied in the first place.
