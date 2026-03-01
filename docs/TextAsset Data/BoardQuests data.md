@@ -49,4 +49,8 @@ The asset contains one line per [BoardQuests](../Enums%20and%20IDs/BoardQuests.m
 |1|Description|[SetText](../SetText/SetText.md) string|The description of the quest|
 |2|Sender|[SetText](../SetText/SetText.md) string|The name of the sender of the quest|
 
-The data will be loaded into `boardquestdata[id, x]` where `id` is the [BoardQuests](../Enums%20and%20IDs/BoardQuests.md) id and `x` is the loaded index
+The data will be loaded into `boardquestdata[id, x]` where `id` is the [BoardQuests](../Enums%20and%20IDs/BoardQuests.md) id and `x` is the loaded index.
+
+The description has special handling in the pause menu. The string can contain `{` to delimit pages in that menu. The pause menu provides UI to only call [SetText](../SetText/SetText.md) with the current page's text and a way to browse the different pages. 
+
+It is also possible to conditionally decide to not render further pages by using `}flags}` as delimiter instead where `flags` is a [flags](../Flags%20arrays/flags.md) slot that must be true to process any further pages. If it's false, the preceding page of the corresponding delimiter will be the last processed page. This allows to render further details only after progress has been done in the game.
