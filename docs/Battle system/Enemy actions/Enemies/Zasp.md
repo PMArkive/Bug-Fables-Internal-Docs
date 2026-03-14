@@ -79,7 +79,7 @@ A multiple targets warp strike attack done multiple times
 
 |#|Conditions|attacker|target|damageammount|property|overrides|block|
 |-:|---|---|---|---|---|---|---|
-|1|Always happens 2 times (3 times instead if hardmode is true), but each calls requires that there's at least 1 player party member alive (`hp` above 0 and not [eatenby](../../Actors%20states/BattleCondition/Eaten.md#eatenby-influences))|This enemy|`playertargetID` after [GetSingleTarget](../../Actors%20states/Targetting/GetRandomAvaliablePlayer.md#getsingletarget) (changes for each calls)|2|null|null|`commandsuccess`|
+|1|Always happens from 1 to 2 times determined randomly (from 1 to 3 times instead if hardmode is true), but each calls requires that there's at least 1 player party member alive (`hp` above 0 and not [eatenby](../../Actors%20states/BattleCondition/Eaten.md#eatenby-influences))|This enemy|`playertargetID` after [GetSingleTarget](../../Actors%20states/Targetting/GetRandomAvaliablePlayer.md#getsingletarget) (changes for each calls)|2|null|null|`commandsuccess`|
 
 ### Logic sequence
 
@@ -117,7 +117,7 @@ This move always sets `nonphyscal` to true which affects the effects of the `Fro
 
 |#|Conditions|damage|property|attacker|playertarget|obj|speed|height|extraargs|destroyparticle|audioonhit|audiomoving|spin|nosound|
 |-:|---------|------|--------|--------|-----------|---|-----|------|---------|--------------|----------|-----------|----|------|
-|1|Always happens 3 times, but each calls requires that there's at least 1 player party member alive (`hp` above 0 and not [eatenby](../../Actors%20states/BattleCondition/Eaten.md#eatenby-influences))|2|null|This enemy|`playertargetID` after [GetSingleTarget](../../Actors%20states/Targetting/GetRandomAvaliablePlayer.md#getsingletarget) (changes for each calls)|A new GameObject named `needle` rooted with a SpriteRenderer using the `projectilepsrites[2]` (needle sprite) positioned at this enemy position + (-1.0, 1.0, 0.1) with a z angle of -50.0|0.04 (25 frames of movement)|0.0|null|null|null|null|Vector3.zero|false|
+|1|Always happens from 1 to 3 times determined randomly, but each calls requires that there's at least 1 player party member alive (`hp` above 0 and not [eatenby](../../Actors%20states/BattleCondition/Eaten.md#eatenby-influences))|2|null|This enemy|`playertargetID` after [GetSingleTarget](../../Actors%20states/Targetting/GetRandomAvaliablePlayer.md#getsingletarget) (changes for each calls)|A new GameObject named `needle` rooted with a SpriteRenderer using the `projectilepsrites[2]` (needle sprite) positioned at this enemy position + (-1.0, 1.0, 0.1) with a z angle of -50.0|0.04 (25 frames of movement)|0.0|null|null|null|null|Vector3.zero|false|
 
 ### Logic sequence
 
