@@ -34,9 +34,9 @@ Here is the layout of the data and the fields associated with this struct (NOTE:
 |1|startscale|Vector3|The default value is Vector3.one if the [AnimIDs](../Enums%20and%20IDs/AnimIDs.md) is higher than the max line id contained in the asset|
 |2|bleeppitch|float|The default value is 1.0 if the [AnimIDs](../Enums%20and%20IDs/AnimIDs.md) is higher than the max line id contained in the asset. See [bleep](../SetText/Individual%20commands/Bleep.md) to learn more|
 |3|bleepid|int|See [bleep](../SetText/Individual%20commands/Bleep.md) to learn more|
-|4|ismodel|bool|See [AddModel](../Entities/EntityControl/Notable%20methods/AddModel.md#addmodel) to learn more|
-|5|modelscale|Vector3|See [AddModel](../Entities/EntityControl/Notable%20methods/AddModel.md#addmodel) to learn more|
-|6|modeloffset|Vector3|See [AddModel](../Entities/EntityControl/Notable%20methods/AddModel.md#addmodel) to learn more|
+|4|ismodel|bool|Check the section below about model animids to learn more|
+|5|modelscale|Vector3|For an ismodel animid, this represents the euler angles the `model` will have. See the section below about model animids to learn more|
+|6|modeloffset|Vector3|For an ismodel or Object animid, the offset to use when calling [AddModel](../Entities/EntityControl/Notable%20methods/AddModel.md#addmodel). See the section below about model animids to learn more|
 |7|freezesize|Vector3||
 |8|freezeoffset|Vector3||
 |9|freezeflipoffset|Vector3||
@@ -56,7 +56,7 @@ Here is the layout of the data and the fields associated with this struct (NOTE:
 |23|hasiceanim|bool||
 |24|noflyanim|bool|This field is optional, it can be omitted which leaves a default value of false|
 |25|forceshadow|bool|This field is optional, it can be omitted which leaves a default value of false|
-|26|Object|bool|This field is optional, it can be omitted which leaves a default value of false|
+|26|Object|bool|Check the section below about model animids to learn more. This field is optional, it can be omitted which leaves a default value of false|
 
 NOTE: Fields 24, 25 and 26 must be omitted TOGETHER if any are to be omitted. Failure to do so will result in an exception to be thrown when parsing the asset.
 
@@ -69,6 +69,44 @@ Here are the possible values for a WalkType enum value:
 |1|Jump|
 
 The only thing this field does is if it's `Jump`, [Move](../Entities/EntityControl/Notable%20methods/Move.md) will have the entity continuously jump when it can during the movement.
+
+### ismodel and Object animids
+These fields, when set to true, acomplishes a similar goal, but executed differently. At most, one of these 2 fields can be true, it is considered invalid for both of them to be true at once (the `WindUp` animid has both fields set to true, but this animid is unused under normal gameplay).
+
+#### What these fields have in common
+Either of them being true means that every entities created using this animid doesn't follow the regular structure that most entities follow. The regular structure is normally enforced by [CreateNewEntity](../Entities/EntityControl/EntityControl%20Creation.md) where they have a SpriteRenderer that gets animated using an Animator present on the entity's root and whose controller comes from loading a RuntimeAnimatorController present in the resources tree at `animationcontrollers/X/X` where `X` is the enum value name of the animid (see the [animids](../Enums%20and%20IDs/AnimIDs.md) table for details).
+
+Instead of having this structure, [AddModel](../Entities/EntityControl/Notable%20methods/AddModel.md) is called during [CheckSpecialID](../Entities/EntityControl/Notable%20methods/CheckSpecialID.md), a part of the entity startup process. AddModel will change the meaning of `sprite` to instead be the root of an instance of a prefab that was loaded from the resources tree at `prefabs/objects/X` where `X` is the animid enum value name. This occurs after the specific animid logic have run (though some specific animid have logic that occurs after, but they aren't common). As for the animations, the `anim` will be set to the animator that can be present in in the object prefab's root (the controller can either come from directly referencing it in the prefab's animator or it can be loaded from the resources tree as normal if it's not assigned). However, this animator is optional: it's possible to have a model animid that cannot be animated and will have its `anim` left at null. This allows entity with a custom object hierarchy that are more complex than a sprite to be animated with their custom controller or to simply not have any animations done on them.
+
+#### Where these fields differ
+Setting either ismodel or Object to true will result in this model structure. Where they differ is how the animid is expected to be animated throughout the entity's lifetime. The animation system EntityControl provides and the [animstate](../Entities/EntityControl/Animations/animstate.md) system can still be used if an Animator is present on the root prefab. Where there's a potential problem is when an animator isn't present. In that case, EntityControl would still execute logic that tends to get in the way because such an animid isn't intended to be animated.
+
+This problem is where the nuance between ismodel and Object comes in. ismodel ONLY makes the entity a model structure, but it is expected to have an animator at its root with a controller (either loaded from the prefab's animator or from resources). Object expects to not have an animator present on the prefab and goes one step further: after AddModel is done, the entity's `animid` field will be set to -1.
+
+Normally, this would result in the entity not being rendered, but because [UpdateSprite](../Entities/EntityControl/Update%20process/UpdateSprite.md) doesn't actually listen for `animid` changes to model entities, this doesn't happen. What happens instead is it will block a significant amount of logic that UpdateSprite would have done instead. In fact, it completely disables any automatic management of the animations and `animstate` so it is no longer possible with an Object animid to have EntityControl manage the animations. It's not even possible to use an Animator that would be present on the object prefab's root because UpdateSprite would set it to null. Since it's expected for the entity to not have animations, this is well suited for this.
+
+> NOTE: This implies that in order to properly know the actual animid of Object entities, the `originalid` field needs to be used instead of `animid`.
+
+#### A way for Object animids to be animated
+However, there is a narrow exception where EntityControl allows an Object animid to have an animator with its own controller. If the entity is backed by an [NPCControl](../Entities/NPCControl/NPCControl.md), UpdateSprite will not set the `anim`'s controller to null. This specifically allows those entities to still have an animator at the root of their prefab without EntityControl setting it to null due to the `animid` being -1. However, it ONLY allows `anim` to not be null: the controller MUST be provided by the prefab (they will not be automatically loaded through the resources tree) and the animation clips still cannot be automatically managed by EntityControl. The only way to play clips on such animator is to do so manually through code. It is effectively only allowing [non standard animation](../Entities/EntityControl/Animations/animstate.md#non-standard-animations) to work.
+
+It should also be noted that an Object animid that is used by an [Enemy](Enemies%20data.md) won't actually have their `animid` set to -1 and thus, it behaves more like a ismodel entity (with the exception of the additional logic mentioned in the next section). This happens because while CheckSpecialID will set the `animid` to -1, this will be undone by [GetEnemyData](Enemies%20data.md#getenemydata) when called with createnewentity since it will itself set the `animid` to the one from the enemy data. Since this happens after the entity was created, it overrides the main effect of the Object field, but it preserves the model structure. Under normal gameplay, this only happens with the `CoiledVineGround` animid used in the `AcolyteVine` enemy (which is actionless and only involved in the [Acolyte](../Battle%20system/Enemy%20actions/Enemies/Acolyte.md) enemy).
+
+#### Other specific logic
+There are other effects an Object animid have enforced by CheckSpecialID:
+
+- `notalk` is set to true
+- `hasshadow` is set to false
+- [UpdateAnimSpecific](../SetText/Individual%20commands/Updateanim.md) will not be called upon starting the entity
+
+ismodel on the other hand doesn't do the above, but it does have one exclusive change: modelscale will be used to set the euler angles of the `model`. The field is not used for Object entities.
+
+#### In summary
+Here are criteria to choose when an animid should be ismodel or Object:
+
+- If EntityControl should manage the animations of every entities with this animid, it should be ismodel. An animator should be present on the object prefab's root and either directly have a controller assigned or load one from the resources tree like a regular animid. The modelscale will allow to configure the euler angles of the `model`
+- If there's no need for any animations of every entities with this animid, it should be Object (modelscale won't be used)
+- If the entity is meant to be used in an NPCControl with Unity animation clips, but there's no need for those clips to be automatically managed by EntityControl, it should be Object (EntityControl will still allow an animator to exist on the object prefab's root, but it won't manage it)
 
 ## Map entity data
 The `entitydata` directory contains the names and details that applies to each specific entities that should be loaded upon a specific [Map](../Enums%20and%20IDs/Maps.md) load. The data only gets loaded during MapControl's [CreateEntities](../MapControl/Init%20methods/CreateEntities.md) for the concerned [Maps](../Enums%20and%20IDs/Maps.md) which happens on the MapControl's Start. The data ends up in the `entities` field of the MapControl which is an array of EntityControl and each index of that array ends up in the npcdata.`mapid` field of each [NPCControl](../Entities/NPCControl/NPCControl.md). The loaded data ends up in `endata` and it is possible to retrieve the fields later. This is how [CheckSpecialID](../Entities/EntityControl/Notable%20methods/CheckSpecialID.md) reads some of them.
