@@ -57,7 +57,7 @@ Here is a table to compute the new entity.`sprite` local y angle:
 ## Last dash effects
 
 - entity.`forcemove` is set to false
-- `BeetleDash` sound plays on the entity at 0.5 pitch if it wasn't playing already on entity.`sound`
+- `BeetleDash` sound plays on the entity at 0.5 volume and 1.0 pitch if it wasn't playing already on entity.`sound`
 
 ## Y velocity reset
 If the following conditions are all fufilled, the entity.`rigid` y velocity is reset to 0.0:
