@@ -24,12 +24,13 @@ The [flagvar](../../../Flags%20arrays/flagvar.md) 0 is set to the entity `animst
 
 If the entity `animid` is 2 (it's a medal):
 
-- [flagvar](../../../Flags%20arrays/flagvar.md) 1 is set to the buying price of the [medal](../../../Enums%20and%20IDs/Medal.md) whose id is the entity `animstate` unless [flag](../../../Flags%20arrays/flags.md) 681 (MYSTERY? is active) which forces it to 35.
+- [flagvar](../../../Flags%20arrays/flagvar.md) 1 is set to the berries (not crystal berries) buying price of the [medal](../../../Enums%20and%20IDs/Medal.md) whose id is the entity `animstate` unless [flag](../../../Flags%20arrays/flags.md) 681 (MYSTERY? is active) which forces it to 35. NOTE: This only works for medal shops that accepts regular berries, it is NOT correct if the medal shop accepts crystal berries. For a flagvar that supports either currencies, use flagvar 10 which is set through CreateDescWindow before the interaction happened.
+- [flagvar](../../../Flags%20arrays/flagvar.md) 10 is set to the buying price of the medal similar than flagvar 1, but it works with either regular berries or crystal berries. It is set through CreateDescWindow before the interaction happened. Since it's the only way to guarantee that the price is correct, it's recommended to use this over flagvar 1 for medals.
 - [flagstring](../../../Flags%20arrays/flagstring.md) 0 to be the name of the [medal](../../../Enums%20and%20IDs/Medal.md) whose id is the entity `animstate` unless [flag](../../../Flags%20arrays/flags.md) 681 (MYSTERY? is active) which forces it to `menutext[59]` (?????).
 
 Otherwise:
 
-- [flagvar](../../../Flags%20arrays/flagvar.md) 1 is set to the buying price of the [item](../../../Enums%20and%20IDs/Items.md) * `mmulti` then ceiled whose id is the entity `animstate` and type being its `animid`. `mmulti` was set during SetUp using a value from the shop entity data.
+- [flagvar](../../../Flags%20arrays/flagvar.md) 1 is set to the buying price of the [item](../../../Enums%20and%20IDs/Items.md) * `mmulti` then ceiled whose id is the entity `animstate` and type being its `animid`. `mmulti` was set during SetUp using a value from the shop entity data. NOTE: Unlike for medals, this always work for items and flagvar 10 is NOT set for items.
 - [flagstring](../../../Flags%20arrays/flagstring.md) 0 to be the name of the [item](../../../Enums%20and%20IDs/Items.md) whose id is the entity `animstate` and type being its `animid`.
 
 From there, the rest acts as if we interacted with the same logic than [ShopKeeper](ShopKeeper.md) with the `args` being `buy` which will call [SetText](../../../SetText/SetText.md) in [dialogue mode](../../../SetText/Dialogue%20mode.md) using `shopkeeper.dialogues[6].y` as the [dialogue line id](../../../SetText/Common%20commands%20id%20schemes/Dialogue%20line%20id.md) for the input string (the buying SetText line) with the following:
