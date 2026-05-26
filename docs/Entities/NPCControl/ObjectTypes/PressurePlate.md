@@ -4,7 +4,7 @@ A plate that can be pushed down in its receptacle using a [PushRock](PushRock.md
 ## Data Arrays
 - `data[0]`: If 1, the player is allowed to actuate the plate
 - `data[1]`: If 1, an NPCControl entity.`icecube` can actuate the plate
-- `data[2]`: An [event](../../../Enums%20and%20IDs/Events.md) id whose event will start when the plate is actuated for the first time
+- `data[2]`: If not negative, an [event](../../../Enums%20and%20IDs/Events.md) id whose event will start when the plate is actuated for the first time. This is optional, no event will start if the value isn't present
 - `vectordata[0]`: the offset to displace the plate when it is pressed relative to its receptacle
 
 ## Additional Data
